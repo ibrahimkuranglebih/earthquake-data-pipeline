@@ -1,12 +1,4 @@
--- ============================================
--- CREATE SCHEMA
--- ============================================
-
 CREATE SCHEMA IF NOT EXISTS warehouse;
-
--- ============================================
--- DIMENSION TABLES
--- ============================================
 
 CREATE TABLE IF NOT EXISTS warehouse.dim_time (
     time_key INT PRIMARY KEY,
@@ -43,10 +35,6 @@ CREATE TABLE IF NOT EXISTS warehouse.dim_status (
     CONSTRAINT unique_status UNIQUE(status)
 );
 
--- ============================================
--- FACT TABLE
--- ============================================
-
 CREATE TABLE IF NOT EXISTS warehouse.fact_earthquake (
     event_id TEXT PRIMARY KEY,
     time_key INT NOT NULL REFERENCES warehouse.dim_time(time_key),
@@ -60,10 +48,6 @@ CREATE TABLE IF NOT EXISTS warehouse.fact_earthquake (
     rms DOUBLE PRECISION,
     inserted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-
--- ============================================
--- INDEX FOR ANALYTICS PERFORMANCE
--- ============================================
 
 CREATE INDEX IF NOT EXISTS idx_fact_time_key
 ON warehouse.fact_earthquake(time_key);

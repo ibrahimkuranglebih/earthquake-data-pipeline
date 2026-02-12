@@ -4,13 +4,16 @@ import requests
 
 BASE_URL = "https://earthquake.usgs.gov/fdsnws/event/1/query"
 
-params = {
-    "format": "geojson",
-    "starttime": "2026-01-01",
-    "endtime": "2026-02-01",
-    "minmagnitude": 4
-}
-
-response = requests.get(BASE_URL, params=params)
-data = response.json()
-print(data)
+def fetch_earthquake_data():
+    try : 
+        params = {
+            "format" : "geojson",
+            "orderby" : "time"
+        }
+        response = requests.get(BASE_URL, params=params,timeout=30)
+        response.raise_for_status()
+        return response.json()
+    
+    except Exception as e:
+        print(f"Error fetching earthquake data: {e}")
+        return None
