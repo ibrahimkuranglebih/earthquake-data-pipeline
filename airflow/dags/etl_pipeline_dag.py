@@ -21,7 +21,7 @@ with DAG(
     schedule="0 8,20 * * *",
     default_args=default_args,
     catchup=False,
-    tags=['football', 'pipeline','dbt','elt']
+    tags=['earthquake', 'pipeline','etl']
 ) as dag :
     extract_task = PythonOperator(
         task_id = "extract_data_earthquake",

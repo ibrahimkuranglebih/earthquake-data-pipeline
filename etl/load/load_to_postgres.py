@@ -22,7 +22,6 @@ def load_to_postgres(ti):
     try:
         cur = conn.cursor()
 
-        # ================= DIM TIME =================
         time_rows = list({
             (r["time_key"], r["full_timestamp"], r["year"],
              r["month"], r["day"], r["hour"])
@@ -36,8 +35,6 @@ def load_to_postgres(ti):
             ON CONFLICT (time_key) DO NOTHING
         """, time_rows)
 
-
-        # ================= DIM LOCATION =================
         location_rows = list({
             (r["place"], r["latitude"], r["longitude"], r["depth_km"])
             for r in records
@@ -51,8 +48,6 @@ def load_to_postgres(ti):
             DO NOTHING
         """, location_rows)
 
-
-        # ================= DIM MAGNITUDE =================
         magnitude_rows = list({
             (r["mag"], r["mag_type"])
             for r in records
@@ -66,8 +61,6 @@ def load_to_postgres(ti):
             DO NOTHING
         """, magnitude_rows)
 
-
-        # ================= DIM STATUS =================
         status_rows = list({
             (r["status"],)
             for r in records
@@ -81,10 +74,6 @@ def load_to_postgres(ti):
             DO NOTHING
         """, status_rows)
 
-
-        # ================= BUILD DIMENSION MAPPING =================
-
-        # LOCATION MAP
         cur.execute("""
             SELECT location_key, place, latitude, longitude, depth_km
             FROM warehouse.dim_location
@@ -94,7 +83,6 @@ def load_to_postgres(ti):
             for row in cur.fetchall()
         }
 
-        # MAGNITUDE MAP
         cur.execute("""
             SELECT magnitude_key, mag, mag_type
             FROM warehouse.dim_magnitude
@@ -114,8 +102,6 @@ def load_to_postgres(ti):
             for row in cur.fetchall()
         }
 
-
-        # ================= FACT TABLE =================
         fact_rows = []
 
         for r in records:
